@@ -1,0 +1,648 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>⚡ Скоростная Математика ⚡</title>
+  <style>
+    :root{--bg:#0b0c0e;--fg:#e2e8f0;--muted:#94a3b8;--accent:#22d3ee;--card:#111318;--border:#1f2937;--ok:#10b981;--danger:#ef4444}
+    [data-theme="light"]{--bg:#fff;--fg:#0b0c0e;--muted:#374151;--accent:#2563eb;--card:#f3f4f6;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Arial;min-height:100vh;display:flex;flex-direction:column}
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:5}
+    .brand{font-weight:800}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--fg);cursor:pointer}
+    .btn.primary{background:var(--accent);color:#000;border-color:var(--accent)}
+    main{width:min(1100px,94vw);margin:18px auto;flex:1;display:grid;gap:14px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+    .grid{display:grid;gap:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px dashed var(--border);text-align:left}
+    .mono{font-family:ui-monospace,Menlo,monospace}
+    .hidden{display:none}
+    .settings-fab{position:fixed;left:14px;bottom:14px;z-index:9}
+    .muted{color:var(--muted)}
+    .ad-placeholder{border:1px dashed var(--border);padding:12px;border-radius:8px;text-align:center;color:var(--muted)}
+    .center{text-align:center}
+    input[type="number"], input[type="text"], select{padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--fg)}
+    .small{font-size:13px;padding:6px 8px}
+    footer{border-top:1px solid var(--border);padding:12px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="brand">⚡ <span id="appTitle">Скоростная Математика</span></div>
+    <div class="row">
+      <span id="userTag" class="small mono">Гость</span>
+      <button id="authBtn" class="btn small">Войти через Google</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section id="homeView" class="grid card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Выберите режим</h2>
+        <div class="row">
+          <label class="muted">Показывать рекорды для:</label>
+          <select id="bestModeSelect" class="small">
+            <option value="pow">Возведение в степень</option>
+            <option value="addsub">Сложение/Вычитание</option>
+            <option value="mul">Умножение</option>
+            <option value="frac">Деление (дроби)</option>
+          </select>
+          <button id="openLeaderTab" class="btn">Открыть таблицу лидеров (новая вкладка)</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="card" style="flex:1;min-width:220px">
+              <strong>Скоростное возведение в степень</strong>
+              <div class="muted">Быстро решайте степени — на время и точность.</div>
+              <div style="margin-top:8px" class="row">
+                <button id="openPowMode" class="btn primary">Играть</button>
+                <button id="openPowLeaderboard" class="btn">Таблица</button>
+              </div>
+            </div>
+
+            <div class="card" style="flex:1;min-width:220px">
+              <strong>Умножение</strong>
+              <div class="muted">Тренируйте умножение — три уровня.</div>
+              <div style="margin-top:8px" class="row">
+                <button id="openMulMode" class="btn primary">Играть</button>
+                <button id="openMulLeaderboard" class="btn">Таблица</button>
+              </div>
+            </div>
+
+            <div class="card" style="flex:1;min-width:220px">
+              <strong>Деление (Дроби)</strong>
+              <div class="muted">Три уровня: Лёгкий / Средний / Сложный.</div>
+              <div style="margin-top:8px" class="row">
+                <button id="openFracMode" class="btn primary">Играть</button>
+                <button id="openFracLeaderboard" class="btn">Таблица</button>
+              </div>
+            </div>
+
+            <div class="card" style="flex:1;min-width:220px">
+              <strong>Сложение / Вычитание</strong>
+              <div class="muted">Три уровня сложности.</div>
+              <div style="margin-top:8px" class="row">
+                <button id="openAddSubMode" class="btn primary">Играть</button>
+                <button id="openAddSubLeaderboard" class="btn">Таблица</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 style="margin:0">Лучшие результаты</h3>
+            <table id="bestTable"><thead><tr><th>Сложность</th><th>Рекорд</th><th>Пользователь</th></tr></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POW MODE -->
+    <section id="powView" class="card hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button class="btn" id="backHome">← Назад</button>
+        <div><strong>Скоростное возведение в степень</strong></div>
+        <div><span id="displayNameHeader" class="mono"></span></div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div>
+          Время на вопрос (сек): <input id="timeLimit" type="number" min="1" value="20" style="width:80px" />
+        </div>
+        <div>
+          Сложность:
+          <select id="difficultyPow">
+            <option value="very_easy">Очень легко</option>
+            <option value="easy">Легко</option>
+            <option value="medium">Средне</option>
+            <option value="hard">Сложно</option>
+            <option value="very_hard">Очень сложно</option>
+            <option value="impossible">Невозможно</option>
+          </select>
+        </div>
+        <div><button id="startPow" class="btn primary">Начать</button></div>
+      </div>
+
+      <div class="center" style="margin-top:18px">
+        <div id="question" style="font-size:40px;font-weight:700">—</div>
+        <input id="answer" class="mono" type="text" placeholder="Ваш ответ" style="font-size:18px;padding:8px;margin-top:10px;width:260px" disabled />
+        <div style="margin-top:10px" class="row center">
+          <div id="timer" class="btn">⏱ 0.0s</div>
+          <div id="score" class="btn">0</div>
+        </div>
+        <div id="message" style="margin-top:10px;color:var(--danger)"></div>
+      </div>
+    </section>
+
+    <!-- MUL MODE -->
+    <section id="mulView" class="card hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button class="btn" id="backHome2">← Назад</button>
+        <div><strong>Умножение</strong></div>
+        <div></div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div>Время: <input id="timeLimitMul" type="number" min="1" value="20" style="width:80px" /></div>
+        <div>Сложность:
+          <select id="difficultyMul">
+            <option value="easy">Легко (1–10)</option>
+            <option value="medium">Средний (10–100)</option>
+            <option value="hard">Сложно (20–1000)</option>
+          </select>
+        </div>
+        <div><button id="startMul" class="btn primary">Начать</button></div>
+      </div>
+
+      <div class="center" style="margin-top:14px">
+        <div id="questionMul" style="font-size:36px;font-weight:700">—</div>
+        <input id="answerMul" class="mono" type="number" placeholder="Ваш ответ" disabled />
+        <div style="margin-top:10px" class="row center"><div id="timerMul" class="btn">⏱ 0.0s</div><div id="scoreMul" class="btn">0</div></div>
+        <div id="messageMul" style="margin-top:10px;color:var(--danger)"></div>
+      </div>
+    </section>
+
+    <!-- FRAC MODE -->
+    <section id="fracView" class="card hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button class="btn" id="backHomeFrac">← Назад</button>
+        <div><strong>Деление (Дроби)</strong></div>
+        <div></div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div>Время: <input id="timeLimitFrac" type="number" min="1" value="20" style="width:80px" /></div>
+        <div>Сложность:
+          <select id="difficultyFrac">
+            <option value="easy">Лёгкое</option>
+            <option value="medium">Среднее</option>
+            <option value="hard">Сложное</option>
+          </select>
+        </div>
+        <div><button id="startFrac" class="btn primary">Начать</button></div>
+      </div>
+
+      <div class="center" style="margin-top:14px">
+        <div id="questionFrac" style="font-size:30px;font-weight:700">—</div>
+        <input id="answerFrac" class="mono" type="text" placeholder="Ваш ответ (например 12 или 0.13)" disabled style="width:260px;padding:8px" />
+        <div style="margin-top:10px" class="row center"><div id="timerFrac" class="btn">⏱ 0.0s</div><div id="scoreFrac" class="btn">0</div></div>
+        <div id="messageFrac" style="margin-top:10px;color:var(--danger)"></div>
+      </div>
+    </section>
+
+    <!-- ADD/SUB MODE -->
+    <section id="addsubView" class="card hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <button class="btn" id="backHomeAdd">← Назад</button>
+        <div><strong>Сложение / Вычитание</strong></div>
+        <div></div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <div>Время: <input id="timeLimitAdd" type="number" min="1" value="20" style="width:80px" /></div>
+        <div>Сложность:
+          <select id="difficultyAdd">
+            <option value="easy">Легко (1–100)</option>
+            <option value="medium">Средний (100–10000)</option>
+            <option value="hard">Сложно (10000–1000000)</option>
+          </select>
+        </div>
+        <div><button id="startAdd" class="btn primary">Начать</button></div>
+      </div>
+
+      <div class="center" style="margin-top:14px">
+        <div id="questionAdd" style="font-size:36px;font-weight:700">—</div>
+        <input id="answerAdd" class="mono" type="text" placeholder="Ваш ответ" disabled style="width:260px;padding:8px" />
+        <div style="margin-top:10px" class="row center"><div id="timerAdd" class="btn">⏱ 0.0s</div><div id="scoreAdd" class="btn">0</div></div>
+        <div id="messageAdd" style="margin-top:10px;color:var(--danger)"></div>
+      </div>
+    </section>
+
+    <!-- LEADERBOARD (single-page view) -->
+    <section id="leaderboardView" class="card hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Таблица лидеров</h3>
+        <div class="row">
+          <select id="leaderModeSelect">
+            <option value="pow">Возведение</option><option value="addsub">Слож/Вычит</option><option value="mul">Умножение</option><option value="frac">Деление</option>
+          </select>
+          <button id="closeLeaderboard" class="btn">Закрыть</button>
+        </div>
+      </div>
+      <div style="margin-top:12px;max-height:480px;overflow:auto">
+        <table id="leaderboardTable"><thead><tr><th>Место</th><th>Пользователь</th><th>Режим</th><th>Сложность</th><th>Рекорд</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <div class="card ad-placeholder" id="adSlot">Рекламный слот — вставьте AdSense после одобрения аккаунта.</div>
+  </main>
+
+  <button id="openSettings" class="btn settings-fab">⚙ Настройки</button>
+
+  <footer>© <span id="year"></span> • Скоростная Математика</footer>
+
+  <!-- Settings modal -->
+  <div id="settingsModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:12px">
+    <div style="width:min(620px,96vw);background:var(--bg);border:1px solid var(--border);padding:12px;border-radius:12px">
+      <h3 style="margin-top:0">Настройки</h3>
+      <div style="display:flex;gap:8px">
+        <div style="flex:1">
+          <label>Никнейм</label><br>
+          <input id="nicknameInput" type="text" placeholder="Твой никнейм" style="width:100%;padding:8px" />
+        </div>
+        <div style="flex:1">
+          <label>Тема</label><br>
+          <select id="themeSelect"><option value="dark">Тёмная</option><option value="light">Светлая</option></select>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
+        <button id="closeSettingsBtn" class="btn">Закрыть</button>
+        <button id="saveSettingsBtn" class="btn primary">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- reCAPTCHA placeholder modal (requires site key if you want captcha) -->
+  <div id="recaptchaModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:12px">
+    <div style="width:min(540px,96vw);background:var(--bg);border:1px solid var(--border);padding:12px;border-radius:12px">
+      <h3 style="margin-top:0">Подтвердите, что вы не робот</h3>
+      <div id="recaptchaContainer" class="center" style="min-height:100px"></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
+        <button id="recaptchaCancel" class="btn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + App code -->
+  <script type="module">
+    // ---------- CONFIG: вставь сюда свои firebaseConfig (уже в консоли) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-GxudNQc0C_rxs7VlSTdUd032bzn1sAg",
+      authDomain: "speedmach-d5c2d.firebaseapp.com",
+      projectId: "speedmach-d5c2d",
+      storageBucket: "speedmach-d5c2d.firebasestorage.app",
+      messagingSenderId: "988036223053",
+      appId: "1:988036223053:web:227243e695aa4ee1fe0c04",
+      measurementId: "G-BJ0CQNBC2T"
+    };
+
+    // If you want reCAPTCHA on registration, set SITE_KEY to your key; otherwise leave null to skip captcha.
+    const RECAPTCHA_SITE_KEY = null; // <-- вставь сюда ключ reCAPTCHA v2 (site key) если хочешь включить капчу
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    setPersistence(auth, browserLocalPersistence).catch(()=>{});
+    const provider = new GoogleAuthProvider();
+    const db = getFirestore(app);
+
+    // Utilities
+    const $ = (id)=>document.getElementById(id);
+    const storageKey = "smath:state";
+
+    // Elements
+    const authBtn = $("authBtn"), userTag = $("userTag"), displayNameHeader = $("displayNameHeader");
+    const openPowMode = $("openPowMode"), openMulMode = $("openMulMode"), openFracMode = $("openFracMode"), openAddSubMode = $("openAddSubMode");
+    const openPowLeaderboard = $("openPowLeaderboard"), openMulLeaderboard = $("openMulLeaderboard"), openFracLeaderboard = $("openFracLeaderboard"), openAddSubLeaderboard = $("openAddSubLeaderboard");
+    const homeView = $("homeView"), powView = $("powView"), mulView = $("mulView"), fracView = $("fracView"), addsubView = $("addsubView"), leaderboardView = $("leaderboardView");
+    const backHome = $("backHome"), backHome2 = $("backHome2"), backHomeFrac = $("backHomeFrac"), backHomeAdd = $("backHomeAdd");
+    const startPow = $("startPow"), startMul = $("startMul"), startFrac = $("startFrac"), startAdd = $("startAdd");
+    const bestModeSelect = $("bestModeSelect"), bestTableBody = $("bestTable").querySelector("tbody");
+    const openLeaderTab = $("openLeaderTab");
+    const openSettingsBtn = $("openSettings"), settingsModal = $("settingsModal"), closeSettingsBtn = $("closeSettingsBtn"), saveSettingsBtn = $("saveSettingsBtn");
+    const nicknameInput = $("nicknameInput"), themeSelect = $("themeSelect");
+    const recaptchaModal = $("recaptchaModal"), recaptchaContainer = $("recaptchaContainer"), recaptchaCancel = $("recaptchaCancel");
+
+    // Game elements POW
+    const difficultyPow = $("difficultyPow"), timeLimit = $("timeLimit");
+    const questionEl = $("question"), answerEl = $("answer"), timerEl = $("timer"), scoreEl = $("score"), messageEl = $("message");
+
+    // MUL elements
+    const difficultyMul = $("difficultyMul"), timeLimitMul = $("timeLimitMul"), questionMul = $("questionMul"), answerMul = $("answerMul"), timerMul = $("timerMul"), scoreMul = $("scoreMul"), messageMul = $("messageMul");
+
+    // FRAC elements
+    const difficultyFrac = $("difficultyFrac"), timeLimitFrac = $("timeLimitFrac"), questionFrac = $("questionFrac"), answerFrac = $("answerFrac"), timerFrac = $("timerFrac"), scoreFrac = $("scoreFrac"), messageFrac = $("messageFrac");
+
+    // ADD/SUB elements
+    const difficultyAdd = $("difficultyAdd"), timeLimitAdd = $("timeLimitAdd"), questionAdd = $("questionAdd"), answerAdd = $("answerAdd"), timerAdd = $("timerAdd"), scoreAdd = $("scoreAdd"), messageAdd = $("messageAdd");
+
+    // Leaderboard table
+    const leaderModeSelect = $("leaderModeSelect"), leaderboardTableBody = $("leaderboardTable").querySelector("tbody");
+
+    // Storage helpers
+    const storage = {
+      get(k, def){ try{ return JSON.parse(localStorage.getItem(k)) ?? def }catch{ return def } },
+      set(k,v){ localStorage.setItem(k, JSON.stringify(v)) }
+    };
+    const SCORES_KEY = "smath:scores_v3";
+    const PREFS_KEY = "smath:prefs_v3";
+
+    // Apply saved prefs
+    const prefs = storage.get(PREFS_KEY, { theme:"dark", nick:"" });
+    document.body.setAttribute("data-theme", prefs.theme || "dark");
+    nicknameInput.value = prefs.nick || "";
+
+    // Helper: show view
+    function showView(v){
+      [homeView,powView,mulView,fracView,addsubView,leaderboardView].forEach(el=>el.classList.add("hidden"));
+      v.classList.remove("hidden");
+    }
+
+    // AUTH helpers
+    async function promptRecaptchaIfNeeded(){
+      if(!RECAPTCHA_SITE_KEY) return true; // no captcha required
+      recaptchaModal.classList.remove("hidden");
+      return new Promise(resolve=>{
+        recaptchaCancel.onclick = ()=>{ recaptchaModal.classList.add("hidden"); resolve(false); };
+        recaptchaContainer.innerHTML = '<div style="padding:18px">reCAPTCHA (site key required). Для теста нажмите подтвердить ниже.</div><div style="display:flex;justify-content:center;margin-top:8px"><button id="fakeRecaptchaOk" class="btn primary">Подтвердить</button></div>';
+        document.getElementById("fakeRecaptchaOk").onclick = ()=>{ recaptchaModal.classList.add("hidden"); resolve(true); };
+      });
+    }
+
+    // Sign-in flow with optional recaptcha
+    authBtn.addEventListener("click", async ()=>{
+      if(auth.currentUser){ await signOut(auth); return; }
+      const ok = await promptRecaptchaIfNeeded();
+      if(!ok) return;
+      try{
+        const res = await signInWithPopup(auth, provider);
+        const user = res.user;
+        if(!user.displayName || !prefs.nick){
+          const nick = prompt("Выберите никнейм (будет отображаться в рекордах):", prefs.nick || user.displayName || "");
+          if(nick){
+            try{ await updateProfile(user, { displayName: nick }); }catch(e){}
+            prefs.nick = nick; storage.set(PREFS_KEY, prefs); nicknameInput.value = nick;
+            await setDoc(doc(db,"users",user.uid), { uid:user.uid, displayName: nick, createdAt: Date.now() }, { merge:true }).catch(()=>{});
+          }
+        }
+      }catch(e){
+        alert("Auth error: " + e.message);
+      }
+    });
+
+    // onAuthStateChanged: immediately update UI and fetch persisted user info
+    onAuthStateChanged(auth, async (user)=>{
+      if(user){
+        const name = user.displayName || prefs.nick || "Пользователь";
+        userTag.textContent = name;
+        displayNameHeader.textContent = name;
+        authBtn.textContent = "Выйти";
+        try{ await setDoc(doc(db,"users",user.uid), { uid:user.uid, displayName: name, lastSeen: Date.now() }, { merge:true }); }catch(e){}
+      } else {
+        userTag.textContent = prefs.nick || "Гость";
+        displayNameHeader.textContent = "";
+        authBtn.textContent = "Войти через Google";
+      }
+      refreshBestTable();
+    });
+
+    // SETTINGS modal
+    openSettingsBtn.onclick = ()=> settingsModal.classList.remove("hidden");
+    closeSettingsBtn.onclick = ()=> settingsModal.classList.add("hidden");
+    saveSettingsBtn.onclick = async ()=> {
+      prefs.theme = themeSelect.value || "dark";
+      prefs.nick = nicknameInput.value.trim();
+      storage.set(PREFS_KEY, prefs);
+      document.body.setAttribute("data-theme", prefs.theme);
+      settingsModal.classList.add("hidden");
+      if(auth.currentUser && prefs.nick){
+        try{ await updateProfile(auth.currentUser, { displayName: prefs.nick }); await setDoc(doc(db,"users",auth.currentUser.uid), { displayName: prefs.nick }, { merge:true }); }catch(e){}
+        userTag.textContent = prefs.nick;
+      }
+    };
+
+    // ---------- BEST TABLE ----------
+    function renderBestTableLocal(local){
+      bestTableBody.innerHTML = "";
+      const mode = bestModeSelect.value;
+      if(mode === "pow"){
+        const order = ["very_easy","easy","medium","hard","very_hard","impossible"];
+        const labels = ["Очень легко","Легко","Средне","Сложно","Очень сложно","Невозможно"];
+        order.forEach((k,i)=>{
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td>${labels[i]}</td><td class="mono">${local?.pow?.[k]?.best ?? "—"}</td><td>${local?.pow?.[k]?.user ?? (auth.currentUser?auth.currentUser.displayName:"Гость")}</td>`;
+          bestTableBody.appendChild(tr);
+        });
+      } else if(mode === "mul"){
+        const labels = ["Легко","Средний","Сложно"];
+        labels.forEach((lab,i)=>{
+          const tr=document.createElement("tr");
+          tr.innerHTML = `<td>${lab}</td><td class="mono">${local?.mul?.[i]?.best ?? "—"}</td><td>${local?.mul?.[i]?.user ?? (auth.currentUser?auth.currentUser.displayName:"Гость")}</td>`;
+          bestTableBody.appendChild(tr);
+        });
+      } else if(mode === "frac"){
+        const labels=["Лёгкое","Среднее","Сложное"];
+        labels.forEach((lab,i)=>{
+          const tr=document.createElement("tr");
+          tr.innerHTML = `<td>${lab}</td><td class="mono">${local?.frac?.[i]?.best ?? "—"}</td><td>${local?.frac?.[i]?.user ?? (auth.currentUser?auth.currentUser.displayName:"Гость")}</td>`;
+          bestTableBody.appendChild(tr);
+        });
+      } else if(mode === "addsub"){
+        const labels=["Легко","Средний","Сложно"];
+        labels.forEach((lab,i)=>{
+          const tr=document.createElement("tr");
+          tr.innerHTML = `<td>${lab}</td><td class="mono">${local?.addsub?.[i]?.best ?? "—"}</td><td>${local?.addsub?.[i]?.user ?? (auth.currentUser?auth.currentUser.displayName:"Гость")}</td>`;
+          bestTableBody.appendChild(tr);
+        });
+      }
+    }
+
+    async function refreshBestTable(){
+      const local = storage.get(SCORES_KEY, {});
+      renderBestTableLocal(local);
+    }
+
+    bestModeSelect.addEventListener("change", refreshBestTable);
+
+    // ---------- GAME HELPERS ----------
+    function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function trimDecimalString(s){ if(s.indexOf('.')>=0){ s = s.replace(/0+$/g,'').replace(/\.$/,''); } return s; }
+
+    // ---------- POW MODE ----------
+    let powTimer=null, powTimeLeft=0, powScore=0, currentBase=0, currentPow=0;
+    function stopPow(){ if(powTimer){ clearInterval(powTimer); powTimer=null; } }
+    function startPowTimer(){ stopPow(); powTimer = setInterval(()=>{ powTimeLeft -= 0.1; timerEl.textContent = `⏱ ${powTimeLeft.toFixed(1)}s`; if(powTimeLeft<=0){ stopPow(); const corr = (BigInt(currentBase) ** BigInt(currentPow)).toString(); endPow("Время вышло! Правильный ответ: "+corr); } },100); }
+    function generatePowTask(difficulty){
+      let attempts=0;
+      while(attempts<300){
+        attempts++;
+        let b,p;
+        if(difficulty==="very_easy"){ b=randInt(1,10); p=2; }
+        else if(difficulty==="easy"){ b=randInt(1,10); p=[2,3,4][randInt(0,2)]; }
+        else if(difficulty==="medium"){ b=randInt(1,10); p=randInt(2,10); }
+        else if(difficulty==="hard"){ b=randInt(1,20); p=randInt(2,10); }
+        else if(difficulty==="very_hard"){ b=randInt(10,200); p=randInt(2,20); }
+        else { b=randInt(100,999); p=randInt(2,6); }
+        try{
+          const val = BigInt(b) ** BigInt(p);
+          const s = val.toString();
+          if(s.length <= 10) return {b,p,s};
+        }catch(e){}
+      }
+      return {b:2,p:2,s:"4"};
+    }
+    function askPow(){ const task = generatePowTask(difficultyPow.value); currentBase = task.b; currentPow = task.p; questionEl.textContent = `${currentBase} ^ ${currentPow} = ?`; answerEl.value = ""; answerEl.disabled = false; answerEl.focus(); powTimeLeft = parseFloat(timeLimit.value) || 20; timerEl.textContent = `⏱ ${powTimeLeft.toFixed(1)}s`; startPowTimer(); }
+    function endPow(reason){ stopPow(); answerEl.disabled=true; messageEl.textContent = reason; questionEl.textContent = "Игра окончена"; saveBestLocal('pow', difficultyPow.value, powScore); powScore=0; scoreEl.textContent="0"; }
+    answerEl.addEventListener("keydown",(e)=>{ if(e.key==="Enter" && !answerEl.disabled){ const user = answerEl.value.trim(); const correct = (BigInt(currentBase) ** BigInt(currentPow)).toString(); if(user === correct){ powScore++; scoreEl.textContent=String(powScore); messageEl.textContent="Верно!"; askPow(); } else endPow("Неверно! Правильный ответ: "+correct); } });
+    startPow.addEventListener("click", ()=>{ powScore=0; scoreEl.textContent="0"; messageEl.textContent=""; askPow(); });
+
+    // ---------- MUL MODE ----------
+    let mulTimer=null, mulTimeLeft=0, mulScore=0, aMul=0,bMul=0;
+    function stopMul(){ if(mulTimer){ clearInterval(mulTimer); mulTimer=null; } }
+    function startMulTimer(){ stopMul(); mulTimer=setInterval(()=>{ mulTimeLeft -= 0.1; timerMul.textContent = `⏱ ${mulTimeLeft.toFixed(1)}s`; if(mulTimeLeft<=0){ stopMul(); endMul("Время вышло! Правильный ответ: "+(aMul*bMul)); } },100); }
+    function pickMulTask(){ const d = difficultyMul.value; if(d==="easy"){ aMul=randInt(1,10); bMul=randInt(1,10); } else if(d==="medium"){ aMul=randInt(10,100); bMul=randInt(10,100); } else { aMul=randInt(20,1000); bMul=randInt(20,1000); } }
+    function askMul(){ pickMulTask(); questionMul.textContent = `${aMul} × ${bMul} = ?`; answerMul.value=""; answerMul.disabled=false; answerMul.focus(); mulTimeLeft = parseFloat(timeLimitMul.value)||20; timerMul.textContent=`⏱ ${mulTimeLeft.toFixed(1)}s`; startMulTimer(); }
+    function endMul(reason){ stopMul(); answerMul.disabled=true; messageMul.textContent = reason; saveBestLocal('mul', (difficultyMul.value==="easy"?0:(difficultyMul.value==="medium"?1:2)), mulScore); mulScore=0; scoreMul.textContent="0"; }
+    answerMul.addEventListener("keydown",(e)=>{ if(e.key==="Enter" && !answerMul.disabled){ const val = Number(answerMul.value); if(val === aMul*bMul){ mulScore++; scoreMul.textContent=String(mulScore); messageMul.textContent="Верно!"; askMul(); } else endMul("Неверно! Правильный ответ: "+(aMul*bMul)); } });
+    startMul.addEventListener("click", ()=>{ mulScore=0; scoreMul.textContent="0"; messageMul.textContent=""; askMul(); });
+
+    // ---------- FRAC MODE (division) ----------
+    let fracTimer=null, fracTimeLeft=0, fracScore=0, numFrac=0, denFrac=1;
+    function stopFrac(){ if(fracTimer){ clearInterval(fracTimer); fracTimer=null; } }
+    function startFracTimer(){ stopFrac(); fracTimer=setInterval(()=>{ fracTimeLeft -= 0.1; timerFrac.textContent = `⏱ ${fracTimeLeft.toFixed(1)}s`; if(fracTimeLeft<=0){ stopFrac(); endFrac("Время вышло! Правильный ответ: "+computeFracAnswerString(numFrac,denFrac)); } },100); }
+    function computeFracAnswerString(n,d){ if(d===0) return "—"; if(n % d === 0) return String(n/d); const dec = (n / d).toFixed(6); return trimDecimalString(dec); }
+    function pickFracTask(){
+      const d = difficultyFrac.value;
+      if(d==="easy"){
+        const divisor = randInt(1,9);
+        const quotient = randInt(1,20);
+        numFrac = divisor * quotient;
+        denFrac = divisor;
+      } else if(d==="medium"){
+        const divisor = randInt(1,99);
+        const quotient = randInt(2,99);
+        numFrac = divisor * quotient;
+        denFrac = divisor;
+      } else {
+        const allowDecimal = Math.random() < 0.6;
+        if(allowDecimal){
+          const p2 = Math.pow(2, randInt(0,6));
+          const p5 = Math.pow(5, randInt(0,6));
+          denFrac = p2 * p5;
+          numFrac = randInt(100, 99999);
+        } else {
+          denFrac = randInt(1,999);
+          numFrac = randInt(100, 99999);
+        }
+      }
+      if(numFrac < 1) numFrac = randInt(1,9999);
+    }
+    function askFrac(){ pickFracTask(); questionFrac.textContent = `${numFrac} ÷ ${denFrac} = ?`; answerFrac.value=""; answerFrac.disabled=false; answerFrac.focus(); fracTimeLeft = parseFloat(timeLimitFrac.value)||20; timerFrac.textContent=`⏱ ${fracTimeLeft.toFixed(1)}s`; startFracTimer(); }
+    function endFrac(reason){ stopFrac(); answerFrac.disabled=true; messageFrac.textContent = reason; saveBestLocal('frac', (difficultyFrac.value==="easy"?0:(difficultyFrac.value==="medium"?1:2)), fracScore); fracScore=0; scoreFrac.textContent="0"; }
+    answerFrac.addEventListener("keydown",(e)=>{ if(e.key==="Enter" && !answerFrac.disabled){ const user = answerFrac.value.trim().replace(',', '.'); const correct = computeFracAnswerString(numFrac, denFrac); if(user === correct) { fracScore++; scoreFrac.textContent=String(fracScore); messageFrac.textContent="Верно!"; askFrac(); } else endFrac("Неверно! Правильный ответ: "+correct); } });
+    startFrac.addEventListener("click", ()=>{ fracScore=0; scoreFrac.textContent="0"; messageFrac.textContent=""; askFrac(); });
+
+    // ---------- ADD / SUB MODE ----------
+    let addTimer=null, addTimeLeft=0, addScore=0, aAdd=0,bAdd=0, addOp='+';
+    function stopAdd(){ if(addTimer){ clearInterval(addTimer); addTimer=null; } }
+    function startAddTimer(){ stopAdd(); addTimer=setInterval(()=>{ addTimeLeft -= 0.1; timerAdd.textContent = `⏱ ${addTimeLeft.toFixed(1)}s`; if(addTimeLeft<=0){ stopAdd(); endAdd("Время вышло! Правильный ответ: "+computeAddAnswer()); } },100); }
+    function computeAddAnswer(){ return String(addOp === '+' ? (aAdd + bAdd) : (aAdd - bAdd)); }
+    function pickAddTask(){ const d = difficultyAdd.value; if(d==="easy"){ aAdd = randInt(1,100); bAdd = randInt(1,100); } else if(d==="medium"){ aAdd = randInt(100,10000); bAdd = randInt(100,10000); } else { aAdd = randInt(10000,1000000); bAdd = randInt(10000,1000000); } addOp = Math.random() < 0.5 ? '+' : '-'; }
+    function askAdd(){ pickAddTask(); questionAdd.textContent = `${aAdd} ${addOp} ${bAdd} = ?`; answerAdd.value=""; answerAdd.disabled=false; answerAdd.focus(); addTimeLeft = parseFloat(timeLimitAdd.value)||20; timerAdd.textContent=`⏱ ${addTimeLeft.toFixed(1)}s`; startAddTimer(); }
+    function endAdd(reason){ stopAdd(); answerAdd.disabled=true; messageAdd.textContent = reason; saveBestLocal('addsub', (difficultyAdd.value==="easy"?0:(difficultyAdd.value==="medium"?1:2)), addScore); addScore=0; scoreAdd.textContent="0"; }
+    answerAdd.addEventListener("keydown",(e)=>{ if(e.key==="Enter" && !answerAdd.disabled){ const user = answerAdd.value.trim(); const correct = computeAddAnswer(); if(user === correct){ addScore++; scoreAdd.textContent=String(addScore); messageAdd.textContent="Верно!"; askAdd(); } else endAdd("Неверно! Правильный ответ: "+correct); } });
+    startAdd.addEventListener("click", ()=>{ addScore=0; scoreAdd.textContent="0"; messageAdd.textContent=""; askAdd(); });
+
+    // ---------- SAVE BEST LOCAL and optionally to Firestore (per-user) ----------
+    function saveBestLocal(mode, key, score){
+      const local = storage.get(SCORES_KEY, {});
+      if(mode === 'pow'){
+        local.pow = local.pow || {};
+        const prev = local.pow[key]?.best || 0;
+        if(score > prev){ local.pow[key] = { best: score, ts: Date.now(), user: auth.currentUser?.displayName || prefs.nick || "Гость" }; storage.set(SCORES_KEY, local); if(auth.currentUser) uploadUserScore(auth.currentUser.uid, { pow: local.pow }); }
+      } else {
+        local[mode] = local[mode] || [];
+        const idx = (typeof key === 'number') ? key : (key==="very_easy"?0:(key==="easy"?0:0));
+        local[mode][idx] = local[mode][idx] || {};
+        const prev = local[mode][idx]?.best || 0;
+        if(score > prev){ local[mode][idx] = { best: score, ts: Date.now(), user: auth.currentUser?.displayName || prefs.nick || "Гость" }; storage.set(SCORES_KEY, local); if(auth.currentUser) uploadUserScore(auth.currentUser.uid, { [mode]: local[mode] }); }
+      }
+      refreshBestTable();
+    }
+    async function uploadUserScore(uid, data){
+      try{ await setDoc(doc(db,"scores",uid), data, { merge:true }); }catch(e){console.warn("Upload score error", e);}
+    }
+
+    // ---------- LEADERBOARD FETCH ----------
+    async function openLeaderboard(mode){
+      showView(leaderboardView);
+      leaderModeSelect.value = mode;
+      leaderboardTableBody.innerHTML = "";
+      try{
+        const colRef = collection(db,"scores");
+        const docs = await getDocs(colRef);
+        const rows = [];
+        docs.forEach(d => {
+          const data = d.data();
+          const user = data.displayName || data.userName || d.id.substring(0,6);
+          if(mode === "pow" && data.pow){
+            for(const [k,v] of Object.entries(data.pow || {})){
+              rows.push({ user, mode:"Возведение", diff:k, score: v.best || 0 });
+            }
+          } else if(mode === "mul" && data.mul){
+            (data.mul||[]).forEach((v,i)=> rows.push({ user, mode:"Умножение", diff: ["Легко","Средний","Сложно"][i]||i, score: v?.best||0 }));
+          } else if(mode === "frac" && data.frac){
+            (data.frac||[]).forEach((v,i)=> rows.push({ user, mode:"Деление", diff: ["Лёгкое","Среднее","Сложное"][i]||i, score: v?.best||0 }));
+          } else if(mode === "addsub" && data.addsub){
+            (data.addsub||[]).forEach((v,i)=> rows.push({ user, mode:"Слож/Вычит", diff: ["Легко","Средний","Сложно"][i]||i, score: v?.best||0 }));
+          }
+        });
+        rows.sort((a,b)=> (b.score||0)-(a.score||0));
+        rows.slice(0,100).forEach((r,i)=>{
+          const tr=document.createElement("tr");
+          tr.innerHTML = `<td>${i+1}</td><td>${r.user}</td><td>${r.mode}</td><td>${r.diff}</td><td class="mono">${r.score}</td>`;
+          leaderboardTableBody.appendChild(tr);
+        });
+      }catch(e){
+        leaderboardTableBody.innerHTML = `<tr><td colspan="5">Ошибка при загрузке: ${e.message}</td></tr>`;
+      }
+    }
+
+    // open leaderboard in new tab
+    openLeaderTab.onclick = ()=>{
+      const url = location.origin + location.pathname + "#leaderboard";
+      window.open(url, "_blank");
+    };
+
+    // hash handling
+    function handleHash(){ if(location.hash === "#leaderboard"){ showView(leaderboardView); openLeaderboard("pow"); } }
+    window.addEventListener("hashchange", handleHash);
+    handleHash();
+
+    // navigation wiring
+    openPowMode.onclick = ()=> showView(powView);
+    backHome.onclick = ()=> showView(homeView);
+    openMulMode.onclick = ()=> showView(mulView);
+    backHome2.onclick = ()=> showView(homeView);
+    openFracMode.onclick = ()=> showView(fracView);
+    backHomeFrac.onclick = ()=> showView(homeView);
+    openAddSubMode.onclick = ()=> showView(addsubView);
+    backHomeAdd.onclick = ()=> showView(homeView);
+
+    openPowLeaderboard.onclick = ()=> openLeaderboard("pow");
+    openMulLeaderboard.onclick = ()=> openLeaderboard("mul");
+    openFracLeaderboard.onclick = ()=> openLeaderboard("frac");
+    openAddSubLeaderboard.onclick = ()=> openLeaderboard("addsub");
+
+    $("closeLeaderboard").onclick = ()=> showView(homeView);
+    leaderModeSelect.onchange = ()=> openLeaderboard(leaderModeSelect.value);
+    refreshBestTable();
+
+    // expose for debugging
+    window._sm = { openLeaderboard, refreshBestTable, storage };
+
+  </script>
+
+</body>
+</html>
