@@ -1,0 +1,1075 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>⚡ Скоростная Математика ⚡</title>
+  <style>
+    :root {
+      --bg: #0b0c0e;
+      --fg: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --card: #111318;
+      --danger: #ef4444;
+      --ok: #10b981;
+      --border: #1f2937;
+    }
+    [data-theme="light"]{
+      --bg: #ffffff;
+      --fg: #0b0c0e;
+      --muted: #374151;
+      --accent: #2563eb;
+      --card: #f3f4f6;
+      --danger: #b91c1c;
+      --ok: #059669;
+      --border: #e5e7eb;
+    }
+    *{box-sizing: border-box}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 5;
+    }
+    .brand {
+      font-weight: 800;
+      letter-spacing: .3px;
+      font-size: clamp(18px, 2.4vw, 26px);
+    }
+    .brand .bolt{ filter: drop-shadow(0 0 4px var(--accent)); }
+    .header-actions {
+      display: flex; gap: 10px; align-items: center;
+    }
+    .btn {
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+      font-size: 14px;
+    }
+    .btn:hover { background: color-mix(in oklab, var(--accent) 12%, var(--bg)); border-color: var(--accent) }
+    .btn:active { transform: translateY(1px) }
+    .btn.primary { background: var(--accent); color: #000; border-color: var(--accent) }
+    .btn.ghost { background: transparent; border-color: var(--border) }
+    .btn.small{ font-size: 12px; padding: 6px 9px; border-radius: 8px }
+    .tag {
+      font-size: 11px; padding: 2px 6px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted)
+    }
+    main {
+      width: min(1100px, 92vw);
+      margin: 22px auto;
+      flex: 1;
+      display: grid;
+      gap: 18px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    }
+    .grid {
+      display: grid; gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px){
+      .grid { grid-template-columns: 1.2fr .8fr; }
+    }
+    .mode-list{ display: grid; gap: 12px; }
+    .mode {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 14px; border-radius: 12px; border: 1px dashed var(--border);
+    }
+    .mode h3 { margin: 0 0 6px 0; font-size: 18px }
+    .mode p { margin: 0; color: var(--muted); font-size: 14px }
+    .muted { color: var(--muted) }
+    table { width: 100%; border-collapse: collapse; font-size: 14px }
+    th, td { padding: 8px 10px; border-bottom: 1px dashed var(--border); text-align: left }
+    th { color: var(--muted); font-weight: 600; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .center { text-align: center }
+    .stack { display: grid; gap: 10px }
+    .row { display:flex; align-items:center; gap:10px; flex-wrap: wrap }
+    .field { display: grid; gap: 6px }
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .game-area { display: grid; gap: 12px; justify-items: center; text-align: center }
+    .big { font-size: clamp(22px, 4vw, 36px); font-weight: 700 }
+    .xxl { font-size: clamp(26px, 6vw, 48px); font-weight: 800 }
+    .warn { color: var(--danger) }
+    .ok { color: var(--ok) }
+
+    /* Settings button bottom-left */
+    .settings-fab {
+      position: fixed;
+      left: 14px;
+      bottom: 14px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 6;
+      opacity: .9;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed; inset: 0; display: none;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,.45);
+      z-index: 10;
+      padding: 20px;
+    }
+    .modal.show { display: flex }
+    .modal .panel {
+      width: min(560px, 96vw);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .panel h3 { margin: 0 0 10px 0 }
+    .panel .footer { display:flex; justify-content: flex-end; gap:10px; margin-top: 14px }
+
+    /* Hover tooltip for difficulty */
+    .tooltip {
+      position: relative; cursor: default;
+    }
+    .tooltip:hover::after {
+      content: attr(data-tip);
+      position: absolute; left: 0; top: calc(100% + 6px);
+      background: var(--card); color: var(--fg);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 8px 10px; width: max-content; max-width: 320px; white-space: normal;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      z-index: 3;
+    }
+    footer{
+      border-top: 1px solid var(--border);
+      padding: 12px 18px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="brand"><span class="bolt">⚡</span> <span data-i18n="app_title">Скоростная Математика</span></div>
+    <div class="header-actions">
+      <span id="userTag" class="tag">Гость</span>
+      <button id="authBtn" class="btn small">Войти через Google</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME (mode select) -->
+    <section id="homeView" class="grid">
+      <div class="card">
+        <h2 style="margin-top:0" data-i18n="choose_mode_title">Выберите режим</h2>
+        <div class="mode-list">
+          <div class="mode">
+            <div>
+              <h3 data-i18n="mode_pow_title">Скоростное возведение в степень</h3>
+              <p class="muted" data-i18n="mode_pow_desc">Быстро решайте степени — на время и точность.</p>
+            </div>
+            <button class="btn primary" id="openPowMode" data-i18n="play">Играть</button>
+          </div>
+
+          <!-- Пример других режимов на будущее -->
+          <div class="mode">
+            <div>
+              <h3 data-i18n="mode_coming">Другие режимы (скоро)</h3>
+              <p class="muted" data-i18n="mode_coming_desc">Таблица умножения, корни, смешанные задания и др.</p>
+            </div>
+            <button class="btn ghost" disabled data-i18n="coming_soon">Скоро</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0" data-i18n="best_scores_title">Лучшие результаты по сложностям</h2>
+        <table id="bestTable">
+          <thead>
+            <tr>
+              <th data-i18n="difficulty">Сложность</th>
+              <th class="center" data-i18n="best_score">Рекорд</th>
+              <th class="center" data-i18n="by_user">Пользователь</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- filled by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- POWER MODE -->
+    <section id="powView" class="card" style="display:none">
+      <div class="row" style="justify-content: space-between">
+        <div class="row">
+          <button class="btn small" id="backHome">← <span data-i18n="back">Назад</span></button>
+          <span class="tag" id="currentDiffTag">—</span>
+        </div>
+        <div class="row">
+          <div class="field" style="min-width:200px">
+            <label for="timeLimit" class="muted" data-i18n="time_per_q">Время на вопрос (сек)</label>
+            <input id="timeLimit" type="number" min="1" value="20" />
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="justify-content:center; margin-top:10px">
+        <div class="field" style="min-width:260px">
+          <label class="muted tooltip" id="difficultyLabel" data-tip="">🔧 <span data-i18n="choose_difficulty">Выберите сложность</span></label>
+          <select id="difficulty">
+            <option value="very_easy" data-tip="1–10 ^ 2" data-i18n="d_very_easy">Очень легко</option>
+            <option value="easy" data-tip="1–10 ^ {2,3,4}" data-i18n="d_easy">Легко</option>
+            <option value="medium" data-tip="1–10 ^ 2…10" data-i18n="d_medium">Средне</option>
+            <option value="hard" data-tip="1–20 ^ 2…10" data-i18n="d_hard">Сложно</option>
+            <option value="very_hard" data-tip="10–100 ^ 2…100" data-i18n="d_very_hard">Очень сложно</option>
+            <option value="impossible" data-tip="100–999 ^ 2…100" data-i18n="d_impossible">Невозможно</option>
+          </select>
+        </div>
+        <button class="btn primary" id="startBtn" style="min-width:140px" data-i18n="start_game">Начать игру</button>
+      </div>
+
+      <div class="game-area" style="margin-top:16px">
+        <div id="question" class="xxl">—</div>
+        <input id="answer" class="mono" type="number" inputmode="numeric" placeholder="Ваш ответ…" style="max-width:260px" disabled />
+        <div class="row">
+          <div id="timer" class="tag">⏱ 0.0s</div>
+          <div id="score" class="tag">0</div>
+        </div>
+        <div id="message" class="muted"></div>
+      </div>
+    </section>
+  </main>
+
+  <button class="btn settings-fab" id="openSettings">⚙ <span data-i18n="settings">Настройки</span></button>
+
+  <footer class="center">
+    <span class="muted">© <span id="year"></span> • <span data-i18n="app_title">Скоростная Математика</span></span>
+  </footer>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal" aria-hidden="true">
+    <div class="panel">
+      <h3 style="margin-top:0">⚙ <span data-i18n="settings">Настройки</span></h3>
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="field">
+          <label class="muted" for="language" data-i18n="language">Язык</label>
+          <select id="language">
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+            <option value="zh">中文</option>
+            <option value="ja">日本語</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
+            <option value="ar">العربية</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="muted" for="theme" data-i18n="theme">Тема</label>
+          <select id="theme">
+            <option value="dark" data-i18n="dark">Тёмная</option>
+            <option value="light" data-i18n="light">Светлая</option>
+          </select>
+        </div>
+      </div>
+      <div class="footer">
+        <button class="btn ghost" id="closeSettings" data-i18n="cancel">Отмена</button>
+        <button class="btn primary" id="saveSettings" data-i18n="save">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase + App -->
+  <script type="module">
+    /************ 1) FIREBASE SETUP ************/
+    // ⛳ ВАЖНО: замените значения ниже на свои из Firebase Console (Project Settings → General → Your apps).
+    // Клиентская конфигурация Firebase НЕ является секретом, её можно хранить в HTML.
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, setDoc, updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    /************ 2) I18N ************/
+    const i18n = {
+      ru: {
+        app_title: "Скоростная Математика",
+        settings: "Настройки",
+        language: "Язык",
+        theme: "Тема",
+        light: "Светлая",
+        dark: "Тёмная",
+        save: "Сохранить",
+        cancel: "Отмена",
+        choose_mode_title: "Выберите режим",
+        mode_pow_title: "Скоростное возведение в степень",
+        mode_pow_desc: "Быстро решайте степени — на время и точность.",
+        mode_coming: "Другие режимы (скоро)",
+        mode_coming_desc: "Таблица умножения, корни, смешанные задания и др.",
+        coming_soon: "Скоро",
+        play: "Играть",
+        best_scores_title: "Лучшие результаты по сложностям",
+        difficulty: "Сложность",
+        best_score: "Рекорд",
+        by_user: "Пользователь",
+        back: "Назад",
+        time_per_q: "Время на вопрос (сек)",
+        choose_difficulty: "Выберите сложность",
+        d_very_easy: "Очень легко",
+        d_easy: "Легко",
+        d_medium: "Средне",
+        d_hard: "Сложно",
+        d_very_hard: "Очень сложно",
+        d_impossible: "Невозможно",
+        start_game: "Начать игру",
+        guest: "Гость",
+        sign_in: "Войти через Google",
+        sign_out: "Выйти",
+        correct: "Верно!",
+        wrong: "Неверно! Правильный ответ: ",
+        time_up: "Время вышло! Правильный ответ: ",
+        game_over: "Игра окончена",
+        record_saved: "Новый рекорд сохранён!"
+      },
+      en: {
+        app_title: "Speed Math",
+        settings: "Settings",
+        language: "Language",
+        theme: "Theme",
+        light: "Light",
+        dark: "Dark",
+        save: "Save",
+        cancel: "Cancel",
+        choose_mode_title: "Choose a mode",
+        mode_pow_title: "Rapid Exponentiation",
+        mode_pow_desc: "Solve powers fast — against the clock.",
+        mode_coming: "More modes (soon)",
+        mode_coming_desc: "Multiplication table, roots, mixed drills, and more.",
+        coming_soon: "Soon",
+        play: "Play",
+        best_scores_title: "Best scores by difficulty",
+        difficulty: "Difficulty",
+        best_score: "Best",
+        by_user: "User",
+        back: "Back",
+        time_per_q: "Time per question (sec)",
+        choose_difficulty: "Choose difficulty",
+        d_very_easy: "Very Easy",
+        d_easy: "Easy",
+        d_medium: "Medium",
+        d_hard: "Hard",
+        d_very_hard: "Very Hard",
+        d_impossible: "Impossible",
+        start_game: "Start Game",
+        guest: "Guest",
+        sign_in: "Sign in with Google",
+        sign_out: "Sign out",
+        correct: "Correct!",
+        wrong: "Wrong! Correct answer: ",
+        time_up: "Time's up! Correct answer: ",
+        game_over: "Game Over",
+        record_saved: "New record saved!"
+      },
+      de: {
+        app_title: "Schnellrechnen",
+        settings: "Einstellungen",
+        language: "Sprache",
+        theme: "Thema",
+        light: "Hell",
+        dark: "Dunkel",
+        save: "Speichern",
+        cancel: "Abbrechen",
+        choose_mode_title: "Modus wählen",
+        mode_pow_title: "Schnelles Potenzieren",
+        mode_pow_desc: "Potenzen schnell lösen – gegen die Uhr.",
+        mode_coming: "Weitere Modi (bald)",
+        mode_coming_desc: "Einmaleins, Wurzeln, gemischte Übungen usw.",
+        coming_soon: "Bald",
+        play: "Spielen",
+        best_scores_title: "Bestwerte nach Schwierigkeit",
+        difficulty: "Schwierigkeit",
+        best_score: "Bestwert",
+        by_user: "Benutzer",
+        back: "Zurück",
+        time_per_q: "Zeit pro Frage (Sek.)",
+        choose_difficulty: "Schwierigkeit wählen",
+        d_very_easy: "Sehr leicht",
+        d_easy: "Leicht",
+        d_medium: "Mittel",
+        d_hard: "Schwer",
+        d_very_hard: "Sehr schwer",
+        d_impossible: "Unmöglich",
+        start_game: "Spiel starten",
+        guest: "Gast",
+        sign_in: "Mit Google anmelden",
+        sign_out: "Abmelden",
+        correct: "Richtig!",
+        wrong: "Falsch! Richtige Antwort: ",
+        time_up: "Zeit abgelaufen! Richtige Antwort: ",
+        game_over: "Spiel beendet",
+        record_saved: "Neuer Rekord gespeichert!"
+      },
+      zh: {
+        app_title: "极速数学",
+        settings: "设置",
+        language: "语言",
+        theme: "主题",
+        light: "浅色",
+        dark: "深色",
+        save: "保存",
+        cancel: "取消",
+        choose_mode_title: "选择模式",
+        mode_pow_title: "快速幂运算",
+        mode_pow_desc: "与时间赛跑，快速计算幂。",
+        mode_coming: "更多模式（即将推出）",
+        mode_coming_desc: "乘法表、开方、综合练习等。",
+        coming_soon: "即将推出",
+        play: "开始",
+        best_scores_title: "各难度最佳成绩",
+        difficulty: "难度",
+        best_score: "最佳",
+        by_user: "用户",
+        back: "返回",
+        time_per_q: "每题时间（秒）",
+        choose_difficulty: "选择难度",
+        d_very_easy: "非常容易",
+        d_easy: "容易",
+        d_medium: "中等",
+        d_hard: "困难",
+        d_very_hard: "非常困难",
+        d_impossible: "不可能",
+        start_game: "开始游戏",
+        guest: "游客",
+        sign_in: "使用 Google 登录",
+        sign_out: "退出登录",
+        correct: "正确！",
+        wrong: "错误！正确答案：",
+        time_up: "时间到！正确答案：",
+        game_over: "游戏结束",
+        record_saved: "新纪录已保存！"
+      },
+      ja: {
+        app_title: "スピード数学",
+        settings: "設定",
+        language: "言語",
+        theme: "テーマ",
+        light: "ライト",
+        dark: "ダーク",
+        save: "保存",
+        cancel: "キャンセル",
+        choose_mode_title: "モードを選択",
+        mode_pow_title: "高速べき乗",
+        mode_pow_desc: "時間との勝負でべき乗を解く。",
+        mode_coming: "他のモード（近日）",
+        mode_coming_desc: "九九、平方根、ミックス問題など。",
+        coming_soon: "近日",
+        play: "プレイ",
+        best_scores_title: "難易度別ベスト",
+        difficulty: "難易度",
+        best_score: "ベスト",
+        by_user: "ユーザー",
+        back: "戻る",
+        time_per_q: "1問あたりの時間（秒）",
+        choose_difficulty: "難易度を選択",
+        d_very_easy: "とても易しい",
+        d_easy: "易しい",
+        d_medium: "普通",
+        d_hard: "難しい",
+        d_very_hard: "とても難しい",
+        d_impossible: "不可能",
+        start_game: "ゲーム開始",
+        guest: "ゲスト",
+        sign_in: "Googleでログイン",
+        sign_out: "ログアウト",
+        correct: "正解！",
+        wrong: "不正解！ 正解：",
+        time_up: "時間切れ！ 正解：",
+        game_over: "ゲームオーバー",
+        record_saved: "新記録を保存しました！"
+      },
+      fr: {
+        app_title: "Maths Express",
+        settings: "Paramètres",
+        language: "Langue",
+        theme: "Thème",
+        light: "Clair",
+        dark: "Sombre",
+        save: "Enregistrer",
+        cancel: "Annuler",
+        choose_mode_title: "Choisir un mode",
+        mode_pow_title: "Exponentiation rapide",
+        mode_pow_desc: "Calculez des puissances à toute vitesse.",
+        mode_coming: "Autres modes (bientôt)",
+        mode_coming_desc: "Table de multiplication, racines, mix, etc.",
+        coming_soon: "Bientôt",
+        play: "Jouer",
+        best_scores_title: "Meilleurs scores par difficulté",
+        difficulty: "Difficulté",
+        best_score: "Record",
+        by_user: "Utilisateur",
+        back: "Retour",
+        time_per_q: "Temps par question (s)",
+        choose_difficulty: "Choisir la difficulté",
+        d_very_easy: "Très facile",
+        d_easy: "Facile",
+        d_medium: "Moyen",
+        d_hard: "Difficile",
+        d_very_hard: "Très difficile",
+        d_impossible: "Impossible",
+        start_game: "Démarrer",
+        guest: "Invité",
+        sign_in: "Se connecter avec Google",
+        sign_out: "Se déconnecter",
+        correct: "Correct !",
+        wrong: "Faux ! Réponse : ",
+        time_up: "Temps écoulé ! Réponse : ",
+        game_over: "Fin de partie",
+        record_saved: "Nouveau record enregistré !"
+      },
+      es: {
+        app_title: "Matemáticas Rápidas",
+        settings: "Ajustes",
+        language: "Idioma",
+        theme: "Tema",
+        light: "Claro",
+        dark: "Oscuro",
+        save: "Guardar",
+        cancel: "Cancelar",
+        choose_mode_title: "Elige un modo",
+        mode_pow_title: "Exponenciación rápida",
+        mode_pow_desc: "Resuelve potencias a contrarreloj.",
+        mode_coming: "Más modos (pronto)",
+        mode_coming_desc: "Tablas, raíces, ejercicios mixtos, etc.",
+        coming_soon: "Pronto",
+        play: "Jugar",
+        best_scores_title: "Mejores puntajes por dificultad",
+        difficulty: "Dificultad",
+        best_score: "Récord",
+        by_user: "Usuario",
+        back: "Atrás",
+        time_per_q: "Tiempo por pregunta (seg)",
+        choose_difficulty: "Elige la dificultad",
+        d_very_easy: "Muy fácil",
+        d_easy: "Fácil",
+        d_medium: "Media",
+        d_hard: "Difícil",
+        d_very_hard: "Muy difícil",
+        d_impossible: "Imposible",
+        start_game: "Iniciar",
+        guest: "Invitado",
+        sign_in: "Iniciar con Google",
+        sign_out: "Cerrar sesión",
+        correct: "¡Correcto!",
+        wrong: "¡Incorrecto! Respuesta: ",
+        time_up: "¡Tiempo! Respuesta: ",
+        game_over: "Juego terminado",
+        record_saved: "¡Nuevo récord guardado!"
+      },
+      pt: {
+        app_title: "Matemática Rápida",
+        settings: "Configurações",
+        language: "Idioma",
+        theme: "Tema",
+        light: "Claro",
+        dark: "Escuro",
+        save: "Salvar",
+        cancel: "Cancelar",
+        choose_mode_title: "Escolha um modo",
+        mode_pow_title: "Exponenciação rápida",
+        mode_pow_desc: "Resolva potências contra o tempo.",
+        mode_coming: "Mais modos (em breve)",
+        mode_coming_desc: "Tabuada, raízes, exercícios mistos, etc.",
+        coming_soon: "Em breve",
+        play: "Jogar",
+        best_scores_title: "Melhores pontuações por dificuldade",
+        difficulty: "Dificuldade",
+        best_score: "Recorde",
+        by_user: "Usuário",
+        back: "Voltar",
+        time_per_q: "Tempo por pergunta (s)",
+        choose_difficulty: "Escolha a dificuldade",
+        d_very_easy: "Muito fácil",
+        d_easy: "Fácil",
+        d_medium: "Médio",
+        d_hard: "Difícil",
+        d_very_hard: "Muito difícil",
+        d_impossible: "Impossível",
+        start_game: "Iniciar jogo",
+        guest: "Convidado",
+        sign_in: "Entrar com Google",
+        sign_out: "Sair",
+        correct: "Correto!",
+        wrong: "Errado! Resposta: ",
+        time_up: "Tempo esgotado! Resposta: ",
+        game_over: "Fim de jogo",
+        record_saved: "Novo recorde salvo!"
+      },
+      ar: {
+        app_title: "رياضيات سريعة",
+        settings: "الإعدادات",
+        language: "اللغة",
+        theme: "السمة",
+        light: "فاتح",
+        dark: "داكن",
+        save: "حفظ",
+        cancel: "إلغاء",
+        choose_mode_title: "اختر الوضع",
+        mode_pow_title: "الأسس السريعة",
+        mode_pow_desc: "احسب القوى بسرعة مع الزمن.",
+        mode_coming: "أوضاع أخرى (قريباً)",
+        mode_coming_desc: "جدول الضرب، الجذور، تمارين متنوعة، وغيرها.",
+        coming_soon: "قريباً",
+        play: "ابدأ",
+        best_scores_title: "أفضل النتائج حسب الصعوبة",
+        difficulty: "الصعوبة",
+        best_score: "أفضل نتيجة",
+        by_user: "المستخدم",
+        back: "رجوع",
+        time_per_q: "الوقت لكل سؤال (ث)",
+        choose_difficulty: "اختر الصعوبة",
+        d_very_easy: "سهل جداً",
+        d_easy: "سهل",
+        d_medium: "متوسط",
+        d_hard: "صعب",
+        d_very_hard: "صعب جداً",
+        d_impossible: "مستحيل",
+        start_game: "ابدأ اللعبة",
+        guest: "ضيف",
+        sign_in: "تسجيل الدخول عبر Google",
+        sign_out: "تسجيل الخروج",
+        correct: "صحيح!",
+        wrong: "خطأ! الإجابة الصحيحة: ",
+        time_up: "انتهى الوقت! الإجابة الصحيحة: ",
+        game_over: "انتهت اللعبة",
+        record_saved: "تم حفظ رقم قياسي جديد!"
+      },
+      hi: {
+        app_title: "तुरंत गणित",
+        settings: "सेटिंग्स",
+        language: "भाषा",
+        theme: "थीम",
+        light: "लाइट",
+        dark: "डार्क",
+        save: "सेव करें",
+        cancel: "रद्द करें",
+        choose_mode_title: "मोड चुनें",
+        mode_pow_title: "तेज़ घातांक",
+        mode_pow_desc: "समय के खिलाफ तेजी से घात निकालें।",
+        mode_coming: "और मोड (जल्द)",
+        mode_coming_desc: "टेबल, मूल, मिश्रित अभ्यास आदि।",
+        coming_soon: "जल्द",
+        play: "खेलें",
+        best_scores_title: "कठिनाई के अनुसार सर्वश्रेष्ठ",
+        difficulty: "कठिनाई",
+        best_score: "रिकॉर्ड",
+        by_user: "उपयोगकर्ता",
+        back: "वापस",
+        time_per_q: "प्रति प्रश्न समय (सेक)",
+        choose_difficulty: "कठिनाई चुनें",
+        d_very_easy: "बहुत आसान",
+        d_easy: "आसान",
+        d_medium: "मध्यम",
+        d_hard: "कठिन",
+        d_very_hard: "बहुत कठिन",
+        d_impossible: "असंभव",
+        start_game: "गेम शुरू करें",
+        guest: "अतिथि",
+        sign_in: "Google से साइन-इन",
+        sign_out: "साइन-आउट",
+        correct: "सही!",
+        wrong: "गलत! सही उत्तर: ",
+        time_up: "समय समाप्त! सही उत्तर: ",
+        game_over: "गेम ओवर",
+        record_saved: "नया रिकॉर्ड सेव!"
+      }
+    };
+
+    function applyI18n(lang){
+      const dict = i18n[lang] || i18n['ru'];
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if(dict[key]) el.textContent = dict[key];
+      });
+      document.title = `⚡ ${dict.app_title} ⚡`;
+      document.getElementById("authBtn").textContent = auth.currentUser ? dict.sign_out : dict.sign_in;
+      document.getElementById("userTag").textContent = auth.currentUser ? (auth.currentUser.displayName || "User") : dict.guest;
+      // Update options text inside select
+      const map = {
+        very_easy: 'd_very_easy',
+        easy: 'd_easy',
+        medium: 'd_medium',
+        hard: 'd_hard',
+        very_hard: 'd_very_hard',
+        impossible: 'd_impossible'
+      };
+      Object.entries(map).forEach(([val,key]) => {
+        const opt = document.querySelector(`#difficulty option[value="${val}"]`);
+        if(opt && dict[key]) opt.textContent = dict[key];
+      });
+      // table headers etc already updated via data-i18n
+    }
+
+    const storage = {
+      get(key, fallback){ try { return JSON.parse(localStorage.getItem(key)) ?? fallback } catch{ return fallback } },
+      set(key, value){ localStorage.setItem(key, JSON.stringify(value)) }
+    };
+
+    const PREF_KEY = "smath:prefs";
+    const SCORES_KEY = "smath:scores"; // local fallback
+    const prefs = storage.get(PREF_KEY, { theme:"dark", lang:"ru" });
+
+    // Apply theme and language from prefs
+    document.body.setAttribute("data-theme", prefs.theme || "dark");
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Views
+    const homeView = document.getElementById("homeView");
+    const powView = document.getElementById("powView");
+    const openPowMode = document.getElementById("openPowMode");
+    const backHome = document.getElementById("backHome");
+    const authBtn = document.getElementById("authBtn");
+    const userTag = document.getElementById("userTag");
+
+    // Settings modal
+    const settingsModal = document.getElementById("settingsModal");
+    const openSettings = document.getElementById("openSettings");
+    const closeSettings = document.getElementById("closeSettings");
+    const saveSettings = document.getElementById("saveSettings");
+    const languageSel = document.getElementById("language");
+    const themeSel = document.getElementById("theme");
+
+    // Game controls
+    const startBtn = document.getElementById("startBtn");
+    const difficultySel = document.getElementById("difficulty");
+    const difficultyLabel = document.getElementById("difficultyLabel");
+    const questionEl = document.getElementById("question");
+    const answerEl = document.getElementById("answer");
+    const timerEl = document.getElementById("timer");
+    const scoreEl = document.getElementById("score");
+    const msgEl = document.getElementById("message");
+    const timeLimitInput = document.getElementById("timeLimit");
+    const bestTableBody = document.querySelector("#bestTable tbody");
+    const currentDiffTag = document.getElementById("currentDiffTag");
+
+    languageSel.value = prefs.lang || "ru";
+    themeSel.value = prefs.theme || "dark";
+    applyI18n(languageSel.value);
+
+    // Difficulty descriptions (tooltips)
+    const diffDesc = {
+      very_easy: "1–10 в степень 2",
+      easy: "1–10 в степени 2,3,4",
+      medium: "1–10 в степень 2…10",
+      hard: "1–20 в степень 2…10",
+      very_hard: "10–100 в степень 2…100",
+      impossible: "100–999 в степень 2…100"
+    };
+    function updateDifficultyTooltip(){
+      const tip = difficultySel.selectedOptions[0]?.getAttribute("data-tip") || "";
+      difficultyLabel.setAttribute("data-tip", tip);
+      currentDiffTag.textContent = difficultySel.selectedOptions[0]?.textContent || "";
+    }
+    updateDifficultyTooltip();
+    difficultySel.addEventListener("change", updateDifficultyTooltip);
+
+    // Modal handlers
+    openSettings.addEventListener("click", ()=> settingsModal.classList.add("show"));
+    closeSettings.addEventListener("click", ()=> settingsModal.classList.remove("show"));
+    saveSettings.addEventListener("click", ()=> {
+      const lang = languageSel.value;
+      const theme = themeSel.value;
+      storage.set(PREF_KEY, { ...prefs, lang, theme });
+      document.body.setAttribute("data-theme", theme);
+      applyI18n(lang);
+      settingsModal.classList.remove("show");
+    });
+
+    // Auth handlers
+    authBtn.addEventListener("click", async ()=> {
+      if(auth.currentUser){
+        await signOut(auth);
+      } else {
+        try {
+          const res = await signInWithPopup(auth, provider);
+          // Ensure nickname exists
+          if(!res.user.displayName){
+            const nick = prompt("Выберите ник / Choose nickname");
+            if(nick){
+              await updateProfile(res.user, { displayName: nick });
+            }
+          }
+        } catch (e){
+          alert("Auth error: " + e.message);
+        }
+      }
+    });
+
+    onAuthStateChanged(auth, async (user)=>{
+      const dict = i18n[languageSel.value] || i18n['ru'];
+      if(user){
+        userTag.textContent = user.displayName || "User";
+        authBtn.textContent = dict.sign_out;
+        await ensureUserDoc(user);
+        await refreshBestTable(); // pull remote
+      } else {
+        userTag.textContent = dict.guest;
+        authBtn.textContent = dict.sign_in;
+        await refreshBestTable(); // local only
+      }
+    });
+
+    async function ensureUserDoc(user){
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      if(!snap.exists()){
+        await setDoc(ref, {
+          uid: user.uid,
+          displayName: user.displayName || "",
+          createdAt: Date.now()
+        });
+      }
+    }
+
+    const DIFF_ORDER = ["very_easy","easy","medium","hard","very_hard","impossible"];
+    const DIFF_LABELS = () => {
+      const d = i18n[languageSel.value] || i18n['ru'];
+      return {
+        very_easy: d.d_very_easy,
+        easy: d.d_easy,
+        medium: d.d_medium,
+        hard: d.d_hard,
+        very_hard: d.d_very_hard,
+        impossible: d.d_impossible
+      };
+    };
+
+    async function refreshBestTable(){
+      const labels = DIFF_LABELS();
+      const local = storage.get(SCORES_KEY, {});
+      let merged = { ...local };
+      // If signed-in, try merging with Firestore
+      if(auth.currentUser){
+        const ref = doc(db, "scores", auth.currentUser.uid);
+        const snap = await getDoc(ref);
+        if(snap.exists()){
+          merged = { ...merged, ...(snap.data()?.pow || {}) };
+        }
+      }
+      // Render
+      bestTableBody.innerHTML = "";
+      DIFF_ORDER.forEach(df => {
+        const tr = document.createElement("tr");
+        const td1 = document.createElement("td");
+        td1.textContent = labels[df];
+        const td2 = document.createElement("td");
+        td2.className = "center mono";
+        td2.textContent = merged?.[df]?.best ?? "—";
+        const td3 = document.createElement("td");
+        td3.className = "center";
+        td3.textContent = auth.currentUser ? (auth.currentUser.displayName || "User") : (i18n[languageSel.value]?.guest || "Guest");
+        tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+        bestTableBody.appendChild(tr);
+      });
+    }
+    refreshBestTable();
+
+    // Navigation
+    openPowMode.addEventListener("click", ()=>{
+      homeView.style.display = "none";
+      powView.style.display = "block";
+      answerEl.disabled = true;
+      msgEl.textContent = "";
+      scoreEl.textContent = "0";
+      questionEl.textContent = "—";
+    });
+    backHome.addEventListener("click", ()=>{
+      powView.style.display = "none";
+      homeView.style.display = "grid";
+      stopTimer();
+      answerEl.disabled = true;
+      msgEl.textContent = "";
+      refreshBestTable();
+    });
+
+    /************ 3) GAME LOGIC (Power Mode) ************/
+    let timer = null;
+    let timeLeft = 0;
+    let timeLimit = 20;
+    let score = 0;
+    let currentBase = 0;
+    let currentPow = 0;
+
+    function stopTimer(){ if(timer){ clearInterval(timer); timer = null; } }
+    function startTimer(){
+      stopTimer();
+      timer = setInterval(() => {
+        timeLeft -= 0.1;
+        timerEl.textContent = `⏱ ${timeLeft.toFixed(1)}s`;
+        if(timeLeft <= 0){
+          stopTimer();
+          const correct = Math.pow(currentBase, currentPow);
+          endGame((i18n[languageSel.value]?.time_up || "Time's up! Correct answer: ") + correct);
+        }
+      }, 100);
+    }
+
+    function randInt(min, max){ // inclusive
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function pickTask(){
+      const d = difficultySel.value;
+      switch(d){
+        case "very_easy":
+          currentBase = randInt(1,10);
+          currentPow = 2;
+          break;
+        case "easy":
+          currentBase = randInt(1,10);
+          currentPow = [2,3,4][randInt(0,2)];
+          break;
+        case "medium":
+          currentBase = randInt(1,10);
+          currentPow = randInt(2,10);
+          break;
+        case "hard":
+          currentBase = randInt(1,20);
+          currentPow = randInt(2,10);
+          break;
+        case "very_hard":
+          currentBase = randInt(10,100);
+          currentPow = randInt(2,100);
+          break;
+        case "impossible":
+          currentBase = randInt(100,999);
+          currentPow = randInt(2,100);
+          break;
+      }
+    }
+
+    function ask(){
+      pickTask();
+      questionEl.textContent = `${currentBase} ^ ${currentPow} = ?`;
+      answerEl.value = "";
+      answerEl.disabled = false;
+      answerEl.focus();
+      timeLimit = parseFloat(timeLimitInput.value) || 20;
+      timeLeft = timeLimit;
+      timerEl.textContent = `⏱ ${timeLeft.toFixed(1)}s`;
+      startTimer();
+    }
+
+    function endGame(reasonText){
+      stopTimer();
+      answerEl.disabled = true;
+      msgEl.innerHTML = `<span class="warn">${reasonText}</span>`;
+      questionEl.textContent = i18n[languageSel.value]?.game_over || "Game Over";
+      // save best
+      saveBest(score);
+    }
+
+    function saveBest(sc){
+      const d = difficultySel.value;
+      const local = storage.get(SCORES_KEY, {});
+      const prev = local?.[d]?.best ?? 0;
+      if(sc > prev){
+        const updated = { ...local, [d]: { best: sc, ts: Date.now() } };
+        storage.set(SCORES_KEY, updated);
+        msgEl.innerHTML += `<div class="ok">${i18n[languageSel.value]?.record_saved || "New record saved!"}</div>`;
+      }
+      // Cloud (per-user doc: scores/{uid} { pow: {difficulty: {best, ts}} })
+      if(auth.currentUser){
+        const ref = doc(db, "scores", auth.currentUser.uid);
+        (async ()=>{
+          const snap = await getDoc(ref);
+          const data = snap.exists() ? (snap.data() || {}) : {};
+          const remotePow = data.pow || {};
+          const curBest = remotePow[d]?.best ?? 0;
+          if(sc > curBest){
+            const newPow = { ...remotePow, [d]: { best: sc, ts: Date.now() } };
+            await setDoc(ref, { pow: newPow }, { merge: true });
+          }
+          await refreshBestTable();
+        })();
+      } else {
+        refreshBestTable();
+      }
+    }
+
+    answerEl.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter"){
+        const val = Number.parseFloat(answerEl.value);
+        const correct = Math.pow(currentBase, currentPow);
+        if(val === correct){
+          score++;
+          scoreEl.textContent = String(score);
+          msgEl.innerHTML = `<span class="ok">${i18n[languageSel.value]?.correct || "Correct!"}</span>`;
+          ask();
+        } else {
+          endGame((i18n[languageSel.value]?.wrong || "Wrong! Correct answer: ") + correct);
+        }
+      }
+    });
+
+    startBtn.addEventListener("click", ()=>{
+      score = 0;
+      scoreEl.textContent = "0";
+      msgEl.textContent = "";
+      ask();
+    });
+
+    // Initial table render after i18n changes
+    languageSel.addEventListener("change", refreshBestTable);
+  </script>
+</body>
+</html>
