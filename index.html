@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>⚡ Скоростная Математика ⚡</title>
+  <style>
+    :root{--bg:#0b0c0e;--fg:#e2e8f0;--muted:#94a3b8;--accent:#22d3ee;--card:#111318;--border:#1f2937;--ok:#10b981;--danger:#ef4444}
+    [data-theme="light"]{--bg:#fff;--fg:#0b0c0e;--muted:#374151;--accent:#2563eb;--card:#f3f4f6;--border:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,Arial;min-height:100vh;display:flex;flex-direction:column}
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:5}
+    .brand{font-weight:800}
+    .btn{padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--fg);cursor:pointer}
+    .btn.primary{background:var(--accent);color:#000;border-color:var(--accent)}
+    .btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+    .btn.small{font-size:13px;padding:6px 8px}
+    main{width:min(1100px,94vw);margin:18px auto;flex:1;display:grid;gap:14px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+    .grid{display:grid;gap:12px}
+    .row{display:flex;gap:10px;align-items:center}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px dashed var(--border);text-align:left}
+    .mono{font-family:ui-monospace,Menlo,monospace}
+    .hidden{display:none}
+    .settings-fab{position:fixed;left:14px;bottom:14px;z-index:9}
+    .muted{color:var(--muted)}
+    .ad-placeholder{border:1px dashed var(--border);padding:12px;border-radius:8px;text-align:center;color:var(--muted)}
+    .center{text-align:center}
+    input[type="number"], input[type="text"], select{padding:8px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--fg)}
+    footer{border-top:1px solid var(--border);padding:12px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <div class="brand">⚡ <span id="appTitle">Скоростная Математика</span></div>
+    <div class="row">
+      <span id="userTag" class="small mono">Гость</span>
+      <button id="authBtn" class="btn small primary">Войти через Google</button>
+      <button id="switchBtn" class="btn small hidden">Сменить аккаунт</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="homeView" class="grid card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Выберите режим</h2>
+        <div class="row">
+          <label class="muted">Показывать рекорды для:</label>
+          <select id="bestModeSelect" class="small">
+            <option value="pow">Возведение в степень</option>
+            <option value="addsub">Сложение/Вычитание</option>
+            <option value="mul">Умножение</option>
+            <option value="frac">Деление (дроби)</option>
+          </select>
+          <button id="openLeaderTab" class="btn">Открыть таблицу лидеров</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 style="margin:0">Лучшие результаты</h3>
+        <table id="bestTable"><thead><tr><th>Сложность</th><th>Рекорд</th><th>Пользователь</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+  </main>
+
+  <button id="openSettings" class="btn settings-fab">⚙ Настройки</button>
+  <footer>© <span id="year"></span> • Скоростная Математика</footer>
+
+  <script type="module">
+    const firebaseConfig = {
+      apiKey: "AIzaSyA-GxudNQc0C_rxs7VlSTdUd032bzn1sAg",
+      authDomain: "speedmach-d5c2d.firebaseapp.com",
+      projectId: "speedmach-d5c2d",
+      storageBucket: "speedmach-d5c2d.firebasestorage.app",
+      messagingSenderId: "988036223053",
+      appId: "1:988036223053:web:227243e695aa4ee1fe0c04",
+      measurementId: "G-BJ0CQNBC2T"
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const authBtn = document.getElementById("authBtn");
+    const switchBtn = document.getElementById("switchBtn");
+    const userTag = document.getElementById("userTag");
+
+    onAuthStateChanged(auth, (user)=>{
+      if(user){
+        userTag.textContent = user.displayName || "Без имени";
+        authBtn.textContent = "Выйти";
+        authBtn.classList.remove("primary");
+        authBtn.classList.add("danger");
+        switchBtn.classList.remove("hidden");
+      } else {
+        userTag.textContent = "Гость";
+        authBtn.textContent = "Войти через Google";
+        authBtn.classList.remove("danger");
+        authBtn.classList.add("primary");
+        switchBtn.classList.add("hidden");
+      }
+    });
+
+    authBtn.onclick = async ()=>{
+      if(auth.currentUser){
+        await signOut(auth);
+      } else {
+        await signInWithPopup(auth, provider).catch(e=>alert("Ошибка входа: "+e.message));
+      }
+    };
+
+    switchBtn.onclick = async ()=>{
+      if(auth.currentUser){ await signOut(auth); }
+      await signInWithPopup(auth, provider).catch(e=>alert("Ошибка входа: "+e.message));
+    };
+  </script>
+</body>
+</html>
