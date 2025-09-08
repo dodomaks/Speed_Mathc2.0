@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Корни — Скоростная математика</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body data-page="game4">
+  <header class="topbar">
+    <div class="brand"><a href="./index.html">⚡ Скоростная математика</a></div>
+    <div class="header-actions">
+      <div id="userTag" class="user-tag">Гость</div>
+      <button id="authBtn" class="btn">Войти</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card center">
+      <div class="row-between fullwidth">
+        <div><button id="backBtnRoot" class="btn">← Назад</button></div>
+        <div><h2 data-i18n="mode_root_title">Извлечение корней</h2></div>
+        <div></div>
+      </div>
+
+      <div class="controls" style="margin-top:12px">
+        <label data-i18n="difficulty">Сложность</label>
+        <select id="difficultyRoot" class="select">
+          <option value="easy">Лёгкая (квадратные корни)</option>
+          <option value="medium">Средняя (квадратные и кубические)</option>
+          <option value="hard">Сложная (кубические / 4‑тые)</option>
+        </select>
+
+        <label data-i18n="time_per_question">Время (сек)</label>
+        <input id="timeLimitRoot" type="number" min="5" value="30" class="input-number" />
+
+        <button id="startRoot" class="btn primary" data-i18n="start">Начать</button>
+      </div>
+
+      <div class="game-area">
+        <div id="rootTimer" class="big-btn">⏱ 0.0s</div>
+        <div id="rootQuestion" class="question">—</div>
+        <input id="rootAnswer" class="mono input-large" placeholder="Введите ответ" disabled />
+        <div id="rootScore" class="big-btn">0</div>
+        <div id="rootMessage" class="muted"></div>
+
+        <div class="vkpad" id="vkpadRoot"></div>
+
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
