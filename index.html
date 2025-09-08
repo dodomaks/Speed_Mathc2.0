@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title data-i18n="app_title">Скоростная математика</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body data-page="index">
+  <header class="topbar">
+    <div class="brand">⚡ <span data-i18n="app_title">Скоростная математика</span></div>
+    <div class="header-actions">
+      <div id="userTag" class="user-tag">Гость</div>
+      <button id="authBtn" class="btn">Войти через Google</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h1 data-i18n="choose_mode_title">Выбор режима</h1>
+      <div class="modes">
+        <div class="mode">
+          <div>
+            <div class="mode-title" data-i18n="mode_pow_title">Скоростное возведение</div>
+            <div class="mode-desc" data-i18n="mode_pow_desc">Быстро решайте степени — на время и точность.</div>
+          </div>
+          <div class="mode-actions">
+            <a class="btn primary" href="./game1.html" data-i18n="play">Играть</a>
+            <a class="btn" href="./leaderboard.html?mode=pow" data-i18n="leaderboard">Таблица</a>
+          </div>
+        </div>
+
+        <div class="mode">
+          <div>
+            <div class="mode-title" data-i18n="mode_mul_title">Скоростное умножение</div>
+            <div class="mode-desc" data-i18n="mode_mul_desc">Тренируйте умножение — три уровня сложности.</div>
+          </div>
+          <div class="mode-actions">
+            <a class="btn primary" href="./game2.html" data-i18n="play">Играть</a>
+            <a class="btn" href="./leaderboard.html?mode=mul" data-i18n="leaderboard">Таблица</a>
+          </div>
+        </div>
+
+        <div class="mode">
+          <div>
+            <div class="mode-title" data-i18n="mode_frac_title">Дроби (деление)</div>
+            <div class="mode-desc" data-i18n="mode_frac_desc">Деление с целыми результатами — разные уровни.</div>
+          </div>
+          <div class="mode-actions">
+            <a class="btn primary" href="./game3.html" data-i18n="play">Играть</a>
+            <a class="btn" href="./leaderboard.html?mode=frac" data-i18n="leaderboard">Таблица</a>
+          </div>
+        </div>
+
+        <div class="mode">
+          <div>
+            <div class="mode-title" data-i18n="mode_root_title">Извлечение корней</div>
+            <div class="mode-desc" data-i18n="mode_root_desc">Квадратные / кубические корни — тренировка скорости.</div>
+          </div>
+          <div class="mode-actions">
+            <a class="btn primary" href="./game4.html" data-i18n="play">Играть</a>
+            <a class="btn" href="./leaderboard.html?mode=root" data-i18n="leaderboard">Таблица</a>
+          </div>
+        </div>
+
+        <div class="mode">
+          <div>
+            <div class="mode-title">Змейка</div>
+            <div class="mode-desc">Классическая змейка — собери яблоки и улучшай рекорд.</div>
+          </div>
+          <div class="mode-actions">
+            <a class="btn primary" href="./snake.html">Играть</a>
+            <a class="btn" href="./leaderboard.html?mode=snake">Таблица</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2 data-i18n="best_scores_title">Лучшие результаты</h2>
+        <a class="btn" id="settingsBtn" href="#" data-i18n="settings">Настройки</a>
+      </div>
+
+      <div class="controls" style="margin-top:12px">
+        <label data-i18n="show_mode">Показывать:</label>
+        <select id="bestModeSelect" class="select">
+          <option value="pow">Скоростное возведение</option>
+          <option value="mul">Умножение</option>
+          <option value="frac">Дроби</option>
+          <option value="root">Корни</option>
+          <option value="snake">Змейка</option>
+        </select>
+      </div>
+
+      <div class="leader-wrap" id="bestTableWrap">
+        <table id="bestTable">
+          <thead>
+            <tr><th>#</th><th data-i18n="col_name">Пользователь</th><th data-i18n="col_score">Рекорд</th><th data-i18n="col_when">Когда</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div>© <span id="year"></span> • <span data-i18n="app_title">Скоростная математика</span></div>
+    <div class="footer-actions">
+      <label class="muted">Тема</label>
+      <select id="themeSelect" class="select">
+        <option value="dark">Чёрная</option>
+        <option value="light">Белая</option>
+      </select>
+    </div>
+  </footer>
+
+  <!-- Settings modal -->
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-hidden="true">
+    <div class="modal-panel card">
+      <h3 data-i18n="settings">Настройки</h3>
+      <div class="form-row">
+        <label data-i18n="language">Язык</label>
+        <select id="languageSelect" class="select">
+          <option value="ru">Русский</option><option value="en">English</option><option value="zh">中文</option><option value="ja">日本語</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="hi">हिन्दी</option><option value="cu">Старославянский</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label data-i18n="theme">Тема</label>
+        <select id="themeSelectModal" class="select">
+          <option value="dark">Чёрная</option>
+          <option value="light">Белая</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <button id="saveSettings" class="btn primary" data-i18n="save">Сохранить</button>
+        <button id="closeSettings" class="btn" data-i18n="cancel">Отмена</button>
+      </div>
+
+      <hr />
+
+      <div class="form-row">
+        <button id="signOutBtn" class="btn" data-i18n="sign_out">Выйти из аккаунта Google</button>
+        <div class="muted" style="font-size:13px;margin-top:6px" data-i18n="sign_note">Если вы не вошли — кнопка неактивна.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type="module" src="./script.js"></script>
+</body>
+</html>
