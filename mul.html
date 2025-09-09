@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Скоростное умножение</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-theme="dark">
+<header class="site-header">
+  <div class="brand">⚡ <a href="index.html" class="brand-link">Скоростная математика</a></div>
+  <div class="header-actions">
+    <div id="userInfoMul" class="user-info">Гость</div>
+    <button id="openSettingsMul" class="btn icon">⚙</button>
+  </div>
+</header>
+
+<main class="container card game-card">
+  <div class="game-top">
+    <button class="btn" id="backHomeMul">← Вернуться</button>
+    <div class="game-stats">
+      <div id="mulScore" class="stat">0</div>
+      <div id="mulTimer" class="stat mono">⏱ 0.0s</div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div id="mulQuestion" class="question">—</div>
+    <input id="mulAnswer" class="input mono" type="number" inputmode="numeric" placeholder="Введите ответ" disabled />
+    <div id="mulMessage" class="muted"></div>
+
+    <div class="controls">
+      <label>Сложность
+        <select id="mulDifficulty" class="select">
+          <option value="easy">Легко (1×1)</option>
+          <option value="medium">Средне (2×2)</option>
+          <option value="hard">Сложно (3×3)</option>
+        </select>
+      </label>
+      <label>Время (сек)
+        <input id="mulTimeLimit" class="input small" type="number" min="5" value="20" />
+      </label>
+      <div>
+        <button id="mulStart" class="btn primary">Начать</button>
+        <button id="mulRestart" class="btn">Начать заново</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module" src="assets/mul.js"></script>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>

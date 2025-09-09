@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Дроби — Деление</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-theme="dark">
+<header class="site-header">
+  <div class="brand">⚡ <a href="index.html" class="brand-link">Скоростная математика</a></div>
+  <div class="header-actions">
+    <div id="userInfoFrac" class="user-info">Гость</div>
+    <button id="openSettingsFrac" class="btn icon">⚙</button>
+  </div>
+</header>
+
+<main class="container card game-card">
+  <div class="game-top">
+    <button class="btn" id="backHomeFrac">← Вернуться</button>
+    <div class="game-stats">
+      <div id="fracScore" class="stat">0</div>
+      <div id="fracTimer" class="stat mono">⏱ 0.0s</div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div id="fracQuestion" class="question">—</div>
+    <input id="fracAnswer" class="input mono" type="text" inputmode="numeric" placeholder="Целое или дробь" disabled />
+    <div id="fracMessage" class="muted"></div>
+
+    <div class="controls">
+      <label>Сложность
+        <select id="fracDifficulty" class="select">
+          <option value="easy">Лёгкая (1–2 знака / на однозначные)</option>
+          <option value="medium">Средняя (2–3 знака / на 3–10)</option>
+          <option value="hard">Сложная (3–5 на 2–4 знака)</option>
+        </select>
+      </label>
+      <label>Время (сек)
+        <input id="fracTimeLimit" class="input small" type="number" min="5" value="20" />
+      </label>
+      <div>
+        <button id="fracStart" class="btn primary">Начать</button>
+        <button id="fracRestart" class="btn">Начать заново</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script type="module" src="assets/frac.js"></script>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>

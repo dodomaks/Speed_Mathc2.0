@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Скоростная математика — Главное</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-theme="dark">
+<header class="site-header">
+  <div class="brand">⚡ <span id="appTitle">Скоростная математика</span></div>
+  <div class="header-actions">
+    <div id="userInfo" class="user-info">Гость</div>
+    <button id="authBtn" class="btn">Войти через Google</button>
+    <button id="openSettings" class="btn icon">⚙</button>
+  </div>
+</header>
+
+<main class="container">
+  <h1 class="page-title">Скоростная математика</h1>
+  <section class="layout">
+    <aside class="modes card">
+      <h2>Выбор режима</h2>
+      <div class="mode">
+        <div>
+          <strong>Скоростное возведение в степень</strong>
+          <p class="muted">Быстро решайте степени — на время и точность.</p>
+        </div>
+        <div class="mode-actions">
+          <a class="btn primary" href="pow.html">Начать играть</a>
+          <button class="btn" data-open-leader="pow">Таблица</button>
+        </div>
+      </div>
+
+      <div class="mode">
+        <div>
+          <strong>Скоростное умножение</strong>
+          <p class="muted">Тренируйте умножение — три уровня.</p>
+        </div>
+        <div class="mode-actions">
+          <a class="btn primary" href="mul.html">Начать играть</a>
+          <button class="btn" data-open-leader="mul">Таблица</button>
+        </div>
+      </div>
+
+      <div class="mode">
+        <div>
+          <strong>Дроби (деление)</strong>
+          <p class="muted">Практикуйте деление без остатка.</p>
+        </div>
+        <div class="mode-actions">
+          <a class="btn primary" href="frac.html">Начать играть</a>
+          <button class="btn" data-open-leader="frac">Таблица</button>
+        </div>
+      </div>
+
+      <div class="mode">
+        <div>
+          <strong>Змейка</strong>
+          <p class="muted">Классическая змейка на 100×100 клеток (масштабируется).</p>
+        </div>
+        <div class="mode-actions">
+          <a class="btn primary" href="snake.html">Начать играть</a>
+          <button class="btn" data-open-leader="snake">Таблица</button>
+        </div>
+      </div>
+
+    </aside>
+
+    <section class="leaderboard card">
+      <div class="leaderhead">
+        <h2>Лучшие результаты</h2>
+        <select id="bestModeSelect" class="select">
+          <option value="pow">Возведение в степень</option>
+          <option value="mul">Умножение</option>
+          <option value="frac">Дроби</option>
+          <option value="snake">Змейка</option>
+        </select>
+      </div>
+      <div class="lead-table-wrap">
+        <table id="bestTable" class="table">
+          <thead><tr><th>Режим</th><th>Сложность</th><th>Рекорд</th><th>Пользователь</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+
+  <footer class="footer">
+    <button id="openSettingsFooter" class="btn">Настройки</button>
+    <small>© <span id="year"></span> • Скоростная Математика</small>
+  </footer>
+</main>
+
+<!-- Settings modal -->
+<div id="settingsModal" class="modal" aria-hidden="true">
+  <div class="modal-panel">
+    <h3>Настройки</h3>
+    <div class="form-row">
+      <label>Язык
+        <select id="languageSelect" class="select"></select>
+      </label>
+      <label>Тема
+        <select id="themeSelect" class="select">
+          <option value="dark">Тёмная</option>
+          <option value="light">Светлая</option>
+        </select>
+      </label>
+    </div>
+    <div class="form-row">
+      <button id="saveSettings" class="btn primary">Сохранить</button>
+      <button id="closeSettings" class="btn">Отмена</button>
+    </div>
+
+    <div class="auth-area">
+      <button id="authBtnModal" class="btn primary">Войти через Google</button>
+      <button id="signOutBtn" class="btn">Выйти</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
