@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Змейка</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-theme="dark">
+<header class="site-header">
+  <div class="brand">⚡ <a href="index.html" class="brand-link">Скоростная математика</a></div>
+  <div class="header-actions">
+    <div id="userInfoSnake" class="user-info">Гость</div>
+    <button id="openSettingsSnake" class="btn icon">⚙</button>
+  </div>
+</header>
+
+<main class="container card game-card">
+  <div class="game-top">
+    <button class="btn" id="backHomeSnake">← Вернуться</button>
+    <div class="game-stats">
+      <div id="snakeScore" class="stat">0</div>
+      <div id="snakeSpeedLabel" class="stat mono">Скорость: 5</div>
+    </div>
+  </div>
+
+  <div class="game-area snake-area">
+    <canvas id="snakeCanvas" width="800" height="800" style="max-width:100%;height:auto"></canvas>
+    <div class="controls">
+      <label>Сложность
+        <select id="snakeDifficulty" class="select">
+          <option value="easy">Легко</option>
+          <option value="medium">Средне</option>
+          <option value="hard">Сложно</option>
+        </select>
+      </label>
+      <div>
+        <button id="snakeStart" class="btn primary">Начать</button>
+        <button id="snakeRestart" class="btn">Начать заново</button>
+      </div>
+    </div>
+    <p class="muted">Управление: стрелки и WASD</p>
+  </div>
+
+</main>
+
+<script type="module" src="assets/snake.js"></script>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>

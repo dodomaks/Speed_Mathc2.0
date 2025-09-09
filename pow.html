@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Скоростное возведение в степень</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-theme="dark">
+<header class="site-header">
+  <div class="brand">⚡ <a href="index.html" class="brand-link">Скоростная математика</a></div>
+  <div class="header-actions">
+    <div id="userInfoPow" class="user-info">Гость</div>
+    <button id="openSettingsPow" class="btn icon">⚙</button>
+  </div>
+</header>
+
+<main class="container card game-card">
+  <div class="game-top">
+    <button class="btn" id="backHome">← Вернуться в главное меню</button>
+    <div class="game-stats">
+      <div id="powScore" class="stat">0</div>
+      <div id="powTimer" class="stat mono">⏱ 0.0s</div>
+    </div>
+  </div>
+
+  <div class="game-area">
+    <div id="powQuestion" class="question">—</div>
+    <input id="powAnswer" class="input mono" type="text" inputmode="numeric" placeholder="Введите ответ" disabled />
+    <div id="powMessage" class="muted"></div>
+
+    <div class="controls">
+      <label>Сложность
+        <select id="powDifficulty" class="select">
+          <option value="very_easy">Очень лёгкая</option>
+          <option value="easy">Лёгкая</option>
+          <option value="medium">Средняя</option>
+          <option value="hard">Сложная</option>
+          <option value="very_hard">Очень сложная</option>
+          <option value="impossible">Невозможная</option>
+        </select>
+      </label>
+
+      <label>Время (сек)
+        <input id="powTimeLimit" class="input small" type="number" min="5" value="60" />
+      </label>
+
+      <label class="infinite-toggle"><input type="checkbox" id="infiniteMode" /> Бесконечный режим ∞</label>
+
+      <div>
+        <button id="powStart" class="btn primary">Начать</button>
+        <button id="powRestart" class="btn">Начать заново</button>
+      </div>
+    </div>
+
+    <div id="numericPad" class="numeric-pad hidden">
+      <button data-key="7" class="pad-btn">7</button><button data-key="8" class="pad-btn">8</button><button data-key="9" class="pad-btn">9</button>
+      <button data-key="4" class="pad-btn">4</button><button data-key="5" class="pad-btn">5</button><button data-key="6" class="pad-btn">6</button>
+      <button data-key="1" class="pad-btn">1</button><button data-key="2" class="pad-btn">2</button><button data-key="3" class="pad-btn">3</button>
+      <button data-key="0" class="pad-btn">0</button><button data-key="-" class="pad-btn">-</button><button id="padEnter" class="pad-btn primary">⏎</button>
+    </div>
+  </div>
+
+</main>
+
+<script type="module" src="assets/pow.js"></script>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
