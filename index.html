@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ Скоростная математика ⚡</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark">
+  <header>
+    <h1 data-i18n="title">⚡ Скоростная математика ⚡</h1>
+  </header>
+  <main>
+    <section id="modes">
+      <h2 data-i18n="modes">Выбор режима</h2>
+      <button onclick="startGame('power')" data-i18n="power_mode">Возведение в степень</button>
+      <button onclick="startGame('multiply')" data-i18n="multiply_mode">Умножение</button>
+      <button onclick="startGame('division')" data-i18n="division_mode">Деление</button>
+    </section>
+    <section id="leaderboard">
+      <h2 data-i18n="leaderboard">Лучшие результаты</h2>
+      <ul id="results"></ul>
+    </section>
+  </main>
+  <footer>
+    <button id="settingsBtn" data-i18n="settings">Настройки</button>
+    <button id="loginBtn" onclick="loginWithGoogle()" data-i18n="login">Войти через Google</button>
+  </footer>
+
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-content">
+      <h2 data-i18n="settings">Настройки</h2>
+      <label for="themeToggle" data-i18n="theme">Тема</label>
+      <select id="themeToggle">
+        <option value="dark" data-i18n="dark">Тёмная</option>
+        <option value="light" data-i18n="light">Светлая</option>
+      </select>
+
+      <label for="languageSelect" data-i18n="language">Язык</label>
+      <select id="languageSelect"></select>
+
+      <button onclick="logout()" data-i18n="logout">Выйти</button>
+      <button onclick="closeSettings()" data-i18n="close">Закрыть</button>
+    </div>
+  </div>
+
+  <script src="firebase.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
