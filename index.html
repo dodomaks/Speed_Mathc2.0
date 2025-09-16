@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>⚡ Скоростная математика ⚡</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body id="app" class="theme-dark">
+  <header class="topbar">
+    <h1 id="title">⚡ Скоростная математика ⚡</h1>
+    <div class="top-controls">
+      <button id="settingsBtn" class="btn small">⚙</button>
+      <button id="authBtn" class="btn small">Google</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="left">
+      <h2 data-i18n="modes">Выбор режима</h2>
+      <div class="modes">
+        <!-- mode cards inserted by JS -->
+      </div>
+    </section>
+
+    <aside class="right">
+      <h2 data-i18n="leaderboard">Таблица лучших результатов</h2>
+      <table id="leaderboard">
+        <thead><tr><th>#</th><th data-i18n='player'>Игрок</th><th data-i18n='mode'>Режим</th><th data-i18n='score'>Очки</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <button id="openSettings" class="btn">Настройки</button>
+    <button id="googleSignIn" class="btn">Google Sign-In</button>
+    <button id="selfTest" class="btn">Run self-test</button>
+  </footer>
+
+  <!-- Settings modal -->
+  <div id="modalOverlay" class="overlay hidden"></div>
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-hidden="true">
+    <h3 data-i18n="settings">Настройки</h3>
+    <div class="field">
+      <label for="langSelect" data-i18n="language">Язык</label>
+      <select id="langSelect"></select>
+    </div>
+    <div class="field">
+      <label data-i18n="theme">Тема</label>
+      <button id="themeToggle" class="btn small">Toggle</button>
+    </div>
+    <div class="field">
+      <button id="signOutBtn" class="btn danger" data-i18n="sign_out">Выйти</button>
+      <button id="closeSettings" class="btn" data-i18n="close">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- Dynamic game container -->
+  <div id="gameContainer"></div>
+
+  <template id="cardTpl">
+    <div class="mode-card">
+      <h3 class="mode-title"></h3>
+      <p class="mode-desc"></p>
+      <div class="mode-actions">
+        <select class="difficulty"></select>
+        <button class="btn startBtn">Начать</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="gameTpl">
+    <div class="game-screen">
+      <div class="game-header">
+        <button class="btn backBtn" data-i18n="menu">Вернуться в меню</button>
+        <div class="game-stats"><span class="timer">00:00</span> • <span class="correct">0</span></div>
+        <button class="btn settingsInGame">⚙</button>
+      </div>
+      <div class="game-body">
+        <div class="question">?</div>
+        <input class="answer" autocomplete="off" inputmode="numeric" />
+        <div class="feedback"></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="resultTpl">
+    <div class="result-screen">
+      <h3 data-i18n="results">Результаты</h3>
+      <p class="res-correct"></p>
+      <p class="res-time"></p>
+      <p class="res-answer"></p>
+      <div class="actions">
+        <button class="btn restart">Начать заново</button>
+        <button class="btn toMenu" data-i18n="menu">Вернуться в меню</button>
+      </div>
+    </div>
+  </template>
+
+  <script type="module" src="app.js"></script>
+  <script src="firebase.js"></script>
+</body>
+</html>
